@@ -99,7 +99,7 @@ def handle_message(event):
     else:
         
         write_one_data({
-            'USER_ID':event.source,
+            'USER_ID':eval(event.source),
             'MESSAGE':msg,
             'TIME_STAMP':event.timestamp})
         line_bot_api.reply_message(event.reply_token, TextSendMessage(msg))
