@@ -76,6 +76,7 @@ def wake_up():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = event.message.text
+    print(event.source)
     if msg == '請告訴我行銷方案':
         try:
             GPT_answer = GPT_response(msg)
@@ -96,10 +97,10 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, message) 
     else:
         
-        write_one_data({
-            'USER_ID':event.source.userId,
-            'MESSAGE':msg,
-            'TIME_STAMP':event.timestamp})
+        # write_one_data({
+        #     'USER_ID':event.source.userId,
+        #     'MESSAGE':msg,
+        #     'TIME_STAMP':event.timestamp})
         line_bot_api.reply_message(event.reply_token, TextSendMessage(msg))
 
 
