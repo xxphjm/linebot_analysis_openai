@@ -128,6 +128,7 @@ def send_chart(userId):
        original_content_url=f"https://linebot-analysis-openai.onrender.com/{os.path.basename(temp_file_path)}",
         preview_image_url=f"https://linebot-analysis-openai.onrender.com/{os.path.basename(temp_file_path)}"
     )
+    print(image_message)
     line_bot_api.push_message(userId, image_message)
 
 @handler.add(PostbackEvent)
