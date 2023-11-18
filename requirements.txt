@@ -2,3 +2,5 @@ line-bot-sdk
 flask
 openai
 gunicorn
+pymongo
+dnspython==1.16.0

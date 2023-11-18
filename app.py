@@ -21,7 +21,7 @@ def wake_up():
         url = 'https://linebot-analysis-openai.onrender.com/' + 'wake_up'
         res = requests.get(url)
         if res.status_code==200:
-            print('喚醒heroku成功')
+            print('喚醒render成功')
         else:
             print('喚醒失敗')
         time.sleep(28*60)
