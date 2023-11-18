@@ -18,6 +18,7 @@ import openai
 import time
 import threading
 import requests
+from imgurpython import ImgurClient
 # ======python的函數庫==========
 from mongodb_function import *
 
@@ -120,13 +121,17 @@ def send_chart(userId):
     temp_file_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
     plt.savefig(temp_file_path, format='png')
     plt.close()
-    # Rewind the stream to the beginning
+    # 上傳至imgur
+    client_id = '6fa533a13b4a60e'
+    client_secret = 'f46e29f638635fa5d1a2c4032988dff17c29af90'
+    client = ImgurClient(client_id, client_secret)
+    image_info = client.upload_from_path(temp_file_path)
 
 
     # Send the image to the user
     image_message = ImageSendMessage(
-       original_content_url=f"./{temp_file_path}",
-        preview_image_url=f"./{temp_file_path}"
+       original_content_url=image_info,
+        preview_image_url=image_info
     )
     line_bot_api.push_message(userId, image_message)
 
