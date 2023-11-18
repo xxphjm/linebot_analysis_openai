@@ -5,3 +5,4 @@ gunicorn
 pymongo
 dnspython==1.16.0
 matplotlib
+imgurpython
