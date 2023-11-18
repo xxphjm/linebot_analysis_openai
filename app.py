@@ -122,12 +122,18 @@ def send_chart(userId):
     plt.close()
     # Rewind the stream to the beginning
 
+    absolute_path = os.path.abspath(temp_file_path)
 
     # Send the image to the user
     image_message = ImageSendMessage(
-       original_content_url=f"https://linebot-analysis-openai.onrender.com/{os.path.basename(temp_file_path)}",
-        preview_image_url=f"https://linebot-analysis-openai.onrender.com/{os.path.basename(temp_file_path)}"
+        original_content_url=f"https://linebot-analysis-openai.onrender.com/{os.path.basename(absolute_path)}",
+        preview_image_url=f"https://linebot-analysis-openai.onrender.com/{os.path.basename(absolute_path)}"
     )
+    # Send the image to the user
+    # image_message = ImageSendMessage(
+    #    original_content_url=f"https://linebot-analysis-openai.onrender.com/{os.path.basename(temp_file_path)}",
+    #     preview_image_url=f"https://linebot-analysis-openai.onrender.com/{os.path.basename(temp_file_path)}"
+    # )
     print(image_message)
     line_bot_api.push_message(userId, image_message)
 
