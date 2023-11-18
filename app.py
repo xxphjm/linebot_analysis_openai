@@ -96,11 +96,12 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, message) 
     else:
         
-        write_one_data({
-            'UID':event.joined.members[0].user_id,
-            'GID':event.source.group_id,
-            'MESSAGE':msg,
-            'TIME_STAMP':datetime.datetime.now()})
+        # write_one_data({
+        #     'UID':event.joined.members[0].user_id,
+        #     'GID':event.source.group_id,
+        #     'MESSAGE':msg,
+        #     'TIME_STAMP':datetime.datetime.now()})
+        print(event)
         line_bot_api.reply_message(event.reply_token, TextSendMessage(msg))
 
 
