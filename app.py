@@ -20,6 +20,7 @@ import requests
 # ======python的函數庫==========
 from mongodb_function import *
 
+
 def wake_up():
     while 1 == 1:
         url = 'https://linebot-analysis-openai.onrender.com/' + 'wake_up'
@@ -30,8 +31,6 @@ def wake_up():
             print('喚醒失敗')
         
         time.sleep(28*60)
-
-
 threading.Thread(target=wake_up).start()
 app = Flask(__name__)
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
@@ -87,7 +86,7 @@ def handle_message(event):
             line_bot_api.reply_message(event.reply_token, TextSendMessage(
                 GPT_response(msg)))
     elif '@讀取' in msg:
-        datas = read_many_datas()
+        datas = my_mongo_client.read_many_datas()
         datas_len = len(datas)
         message = TextSendMessage(text=f'資料數量，一共{datas_len}條')
         line_bot_api.reply_message(event.reply_token, message)
@@ -98,7 +97,7 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, message) 
     else:
         
-        write_one_data({
+        my_mongo_client.write_one_data({
             'USER_ID':event.source.user_id,
             'MESSAGE':msg,
             'TIME_STAMP':event.timestamp})
@@ -123,3 +122,5 @@ def welcome(event):
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
+    my_mongo_client = MongoDBClient('LINEBOT', 'CHAT_RECORDS')
+
