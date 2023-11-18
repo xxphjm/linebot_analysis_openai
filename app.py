@@ -18,7 +18,7 @@ import requests
 #======python的函數庫==========
 def wake_up():
     while 1==1:
-        url = 'https://xxphjm-linebot.herokuapp.com/' + 'wake_up'
+        url = 'https://linebot-analysis-openai.onrender.com/' + 'wake_up'
         res = requests.get(url)
         if res.status_code==200:
             print('喚醒heroku成功')
