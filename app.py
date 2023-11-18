@@ -76,7 +76,7 @@ def wake_up():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = event.message.text
-    print(event.source)
+    print(event.source.userId)
     if msg == '請告訴我行銷方案':
         try:
             GPT_answer = GPT_response(msg)
