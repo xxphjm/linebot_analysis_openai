@@ -43,7 +43,11 @@ line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 # OPENAI API Key初始化設定
 openai.api_key = os.getenv('OPENAI_API_KEY')
-
+# 設定初始化事件處理
+def handle_follow(event):
+    line_bot_api.push_message(event.source.user_id, TextSendMessage(quick_reply=QuickReply(items=[
+    QuickReplyButton(action=MessageAction(label="初始化酒友", text="初始化酒友"))
+    ])))
 
 def GPT_response(text):
     # 接收回應
@@ -64,9 +68,6 @@ def callback():
     app.logger.info("Request body: " + body)
     # handle webhook body
     try:
-        line_bot_api.push_message(body.events.source.user_id, TextSendMessage(quick_reply=QuickReply(items=[
-        QuickReplyButton(action=MessageAction(label="初始化酒友", text="初始化酒友"))
-        ])))
         handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
