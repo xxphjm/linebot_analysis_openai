@@ -10,6 +10,7 @@ from linebot.exceptions import (
 from linebot.models import *
 import matplotlib.pyplot as plt
 # ======python的函數庫==========
+import io
 import tempfile
 import os
 import datetime
@@ -76,7 +77,7 @@ def wake_up():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = event.message.text
-    # userId=event.source.userId
+    userId=event.source.user_id
     # print(event.source.userId)
     if msg == '請告訴我行銷方案':
         try:
@@ -97,35 +98,38 @@ def handle_message(event):
         message = TextSendMessage(text=str(datas))
         line_bot_api.reply_message(event.reply_token, message) 
     elif '@圖片' in msg:
-         send_bar_chart()
+        send_chart(userId)
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Chart sent!'))
 
     else:
         my_mongo_client.write_one_data({
-            'USER_ID':event.source.user_id,
+            'USER_ID':userId,
             'MESSAGE':msg,
             'TIME_STAMP':event.timestamp})
         line_bot_api.reply_message(event.reply_token, TextSendMessage(msg))
-    def send_bar_chart():
-    # Create some sample data for the bar chart
-        categories = ['Category A', 'Category B', 'Category C', 'Category D']
-        values = [20, 35, 25, 40]
+def send_chart(userId):
+    # Create some sample data for the chart
+    labels = ['Label A', 'Label B', 'Label C', 'Label D']
+    values = [30, 50, 20, 40]
 
-        # Create a bar chart using matplotlib
-        plt.bar(categories, values)
-        plt.xlabel('Categories')
-        plt.ylabel('Values')
-        plt.title('Bar Chart Example')
+    # Create a pie chart using matplotlib
+    plt.pie(values, labels=labels, autopct='%1.1f%%', startangle=140)
+    plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
-        # Save the chart as an image
-        image_path = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
-        plt.savefig(image_path.name)
-        plt.close()
+    # Save the chart as a binary stream
+    chart_stream = io.BytesIO()
+    plt.savefig(chart_stream, format='png')
+    plt.close()
 
-        # Send the image to the user
-        image_message = ImageSendMessage(original_content_url=f"{os.environ.get('BASE_URL')}/static/tmp/{image_path.name}",
-                                            preview_image_url=f"{os.environ.get('BASE_URL')}/static/tmp/{image_path.name}")
-        line_bot_api.push_message('U57260e8f7ab0618010c97bb27b76f7a1', image_message)
+    # Rewind the stream to the beginning
+    chart_stream.seek(0)
 
+    # Send the image to the user
+    image_message = ImageSendMessage(
+        original_content_url=chart_stream,
+        preview_image_url=chart_stream
+    )
+    line_bot_api.push_message(userId, image_message)
 
 @handler.add(PostbackEvent)
 def handle_message(event):
