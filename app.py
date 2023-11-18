@@ -18,7 +18,7 @@ import time
 import threading
 import requests
 # ======python的函數庫==========
-
+from mongodb_function import *
 
 def wake_up():
     while 1 == 1:
@@ -85,8 +85,19 @@ def handle_message(event):
         except:
             line_bot_api.reply_message(event.reply_token, TextSendMessage(
                 GPT_response(msg)))
-        
+    elif '@讀取' in msg:
+        datas = read_many_datas()
+        datas_len = len(datas)
+        message = TextSendMessage(text=f'資料數量，一共{datas_len}條')
+        line_bot_api.reply_message(event.reply_token, message)
+
+    elif '@查詢' in msg:
+        datas = col_find('events')
+        message = TextSendMessage(text=str(datas))
+        line_bot_api.reply_message(event.reply_token, message) 
     else:
+        body = request.get_data(as_text=True)
+        write_one_data(eval(body.replace('false','False')))
         line_bot_api.reply_message(event.reply_token, TextSendMessage(msg))
 
 
