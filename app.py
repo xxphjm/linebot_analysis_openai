@@ -20,6 +20,7 @@ import requests
 # ======python的函數庫==========
 from mongodb_function import *
 
+my_mongo_client = MongoDBClient('LINEBOT', 'CHAT_RECORDS')
 
 def wake_up():
     while 1 == 1:
@@ -122,5 +123,4 @@ def welcome(event):
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-    my_mongo_client = MongoDBClient('LINEBOT', 'CHAT_RECORDS')
 
