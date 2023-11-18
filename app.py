@@ -117,17 +117,16 @@ def send_chart(userId):
     plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
     # Save the chart as a binary stream
-    chart_stream = io.BytesIO()
-    plt.savefig(chart_stream, format='png')
+    temp_file_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
+    plt.savefig(temp_file_path, format='png')
     plt.close()
-
     # Rewind the stream to the beginning
-    chart_stream.seek(0)
+
 
     # Send the image to the user
     image_message = ImageSendMessage(
-        original_content_url=chart_stream,
-        preview_image_url=chart_stream
+       original_content_url=f"https://linebot-analysis-openai.onrender.com/{os.path.basename(temp_file_path)}",
+        preview_image_url=f"https://linebot-analysis-openai.onrender.com/{os.path.basename(temp_file_path)}"
     )
     line_bot_api.push_message(userId, image_message)
 
