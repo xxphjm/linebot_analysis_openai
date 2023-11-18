@@ -46,8 +46,7 @@ print(openai.api_key)
 def GPT_response(text):
     # 接收回應
     response = openai.Completion.create(
-        model="text-davinci-003", prompt=text, temperature=0.5, max_tokens=500)
-    print(response)
+        model="text-davinci-003", prompt=text, temperature=0.5, max_tokens=5000)
     # 重組回應
     answer = response['choices'][0]['text'].replace('。', '')
     return answer
@@ -78,14 +77,17 @@ def wake_up():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = event.message.text
-    try:
-        GPT_answer = GPT_response(msg)
-        print(GPT_answer)
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(GPT_answer))
-    except:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(
-            GPT_response(msg)))
+    if msg == '請告訴我行銷方案':
+        try:
+            GPT_answer = GPT_response(msg)
+            line_bot_api.reply_message(
+                event.reply_token, TextSendMessage(GPT_answer))
+        except:
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(
+                GPT_response(msg)))
+        
+    else:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(msg))
 
 
 @handler.add(PostbackEvent)
