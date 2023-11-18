@@ -10,10 +10,8 @@ from linebot.exceptions import (
 from linebot.models import *
 import matplotlib.pyplot as plt
 # ======python的函數庫==========
-import io
 import tempfile
 import os
-import datetime
 import openai
 import time
 import threading
@@ -32,8 +30,10 @@ def wake_up():
             print('喚醒render成功')
         else:
             print('喚醒失敗')
-        
+
         time.sleep(28*60)
+
+
 threading.Thread(target=wake_up).start()
 app = Flask(__name__)
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
@@ -43,6 +43,7 @@ line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 # OPENAI API Key初始化設定
 openai.api_key = os.getenv('OPENAI_API_KEY')
+
 
 def GPT_response(text):
     # 接收回應
@@ -78,7 +79,7 @@ def wake_up():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = event.message.text
-    userId=event.source.user_id
+    userId = event.source.user_id
     # print(event.source.userId)
     if msg == '請告訴我行銷方案':
         try:
@@ -97,17 +98,17 @@ def handle_message(event):
     elif '@查詢' in msg:
         datas = my_mongo_client.col_find('events')
         message = TextSendMessage(text=str(datas))
-        line_bot_api.reply_message(event.reply_token, message) 
+        line_bot_api.reply_message(event.reply_token, message)
     elif '@圖片' in msg:
         send_chart(userId)
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Chart sent!'))
-
     else:
         my_mongo_client.write_one_data({
-            'USER_ID':userId,
-            'MESSAGE':msg,
-            'TIME_STAMP':event.timestamp})
+            'USER_ID': userId,
+            'MESSAGE': msg,
+            'TIME_STAMP': event.timestamp})
         line_bot_api.reply_message(event.reply_token, TextSendMessage(msg))
+
+
 def send_chart(userId):
     # Create some sample data for the chart
     labels = ['Label A', 'Label B', 'Label C', 'Label D']
@@ -115,25 +116,26 @@ def send_chart(userId):
 
     # Create a pie chart using matplotlib
     plt.pie(values, labels=labels, autopct='%1.1f%%', startangle=140)
-    plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    # Equal aspect ratio ensures that pie is drawn as a circle.
+    plt.axis('equal')
 
     # Save the chart as a binary stream
-    temp_file_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
+    temp_file_path = tempfile.NamedTemporaryFile(
+        delete=False, suffix=".png").name
     plt.savefig(temp_file_path, format='png')
     plt.close()
     # 上傳至imgur
     client_id = os.getenv('IMGUR_CLIENT_ID')
-    client_secret =  os.getenv('IMGUR_CLIENT_SECRET')
+    client_secret = os.getenv('IMGUR_CLIENT_SECRET')
     client = ImgurClient(client_id, client_secret)
     image_info = client.upload_from_path(temp_file_path)
-
-
-    # Send the image to the user
+    # 將圖片傳送給使用者
     image_message = ImageSendMessage(
-       original_content_url=image_info['link'],
+        original_content_url=image_info['link'],
         preview_image_url=image_info['link']
     )
     line_bot_api.push_message(userId, image_message)
+
 
 @handler.add(PostbackEvent)
 def handle_message(event):
@@ -153,4 +155,3 @@ def welcome(event):
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-
