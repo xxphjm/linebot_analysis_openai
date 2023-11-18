@@ -24,7 +24,7 @@ def wake_up():
             print('喚醒render成功')
         else:
             print('喚醒失敗')
-        print(url)
+        print(res)
         time.sleep(28*60)
 
 threading.Thread(target=wake_up).start()
