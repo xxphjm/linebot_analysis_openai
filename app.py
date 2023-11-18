@@ -93,7 +93,7 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, message)
 
     elif '@查詢' in msg:
-        datas = col_find('events')
+        datas = my_mongo_client.col_find('events')
         message = TextSendMessage(text=str(datas))
         line_bot_api.reply_message(event.reply_token, message) 
     else:
