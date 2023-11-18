@@ -13,8 +13,20 @@ import tempfile, os
 import datetime
 import openai
 import time
+import threading 
+import requests
 #======python的函數庫==========
+def wake_up():
+    while 1==1:
+        url = 'https://xxphjm-linebot.herokuapp.com/' + 'wake_up'
+        res = requests.get(url)
+        if res.status_code==200:
+            print('喚醒heroku成功')
+        else:
+            print('喚醒失敗')
+        time.sleep(28*60)
 
+threading.Thread(target=wake_up).start()
 app = Flask(__name__)
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 # Channel Access Token
@@ -49,7 +61,9 @@ def callback():
         abort(400)
     return 'OK'
 
-
+@app.route("/wake_up")
+def wake_up():
+    return "Hey!Wake Up!!"
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
