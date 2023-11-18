@@ -130,8 +130,8 @@ def send_chart(userId):
 
     # Send the image to the user
     image_message = ImageSendMessage(
-       original_content_url=image_info,
-        preview_image_url=image_info
+       original_content_url=image_info['link'],
+        preview_image_url=image_info['link']
     )
     line_bot_api.push_message(userId, image_message)
 
