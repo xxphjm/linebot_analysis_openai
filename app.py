@@ -41,7 +41,6 @@ line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 # OPENAI API Key初始化設定
 openai.api_key = os.getenv('OPENAI_API_KEY')
-print(openai.api_key)
 
 def GPT_response(text):
     # 接收回應
@@ -96,8 +95,12 @@ def handle_message(event):
         message = TextSendMessage(text=str(datas))
         line_bot_api.reply_message(event.reply_token, message) 
     else:
-        body = request.get_data(as_text=True)
-        write_one_data(eval(body.replace('false','False')))
+        
+        write_one_data({
+            'UID':event.joined.members[0].user_id,
+            'GID':event.source.group_id,
+            'MESSAGE':msg,
+            'TIME_STAMP':datetime.datetime.now()})
         line_bot_api.reply_message(event.reply_token, TextSendMessage(msg))
 
 

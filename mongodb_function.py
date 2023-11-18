@@ -5,8 +5,8 @@ import pymongo
 client = pymongo.MongoClient("mongodb+srv://s43926027:s35867921@cluster0.swxlqtf.mongodb.net/?authMechanism=DEFAULT")
 
 #第一個db的建立
-db = client['MongoClient']
-col = db['Database']
+db = client['LINEBOT']
+col = db['CHAT_RECORDS']
 
 # print(client.database_names())#列出client中的資料庫名稱
 #print(db.collection_names())#列出db中的集合名稱
