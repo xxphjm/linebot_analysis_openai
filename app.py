@@ -61,13 +61,12 @@ def callback():
     signature = request.headers['X-Line-Signature']
     # get request body as text
     body = request.get_data(as_text=True)
-    line_bot_api.push_message(body.events.source.user_id, TextSendMessage(quick_reply=QuickReply(items=[
-    QuickReplyButton(action=MessageAction(label="初始化酒友", text="初始化酒友"))
-])))
-    print(body)
     app.logger.info("Request body: " + body)
     # handle webhook body
     try:
+        line_bot_api.push_message(body.events.source.user_id, TextSendMessage(quick_reply=QuickReply(items=[
+        QuickReplyButton(action=MessageAction(label="初始化酒友", text="初始化酒友"))
+        ])))
         handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
