@@ -44,9 +44,7 @@ handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 # OPENAI API Key初始化設定
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-# line_bot_api.push_message('你自己的ID', TextSendMessage(quick_reply=QuickReply(items=[
-#     QuickReplyButton(action=MessageAction(label="初始化酒友", text="初始化酒友"))
-# ])))
+
 def GPT_response(text):
     # 接收回應
     response = openai.Completion.create(
@@ -63,6 +61,9 @@ def callback():
     signature = request.headers['X-Line-Signature']
     # get request body as text
     body = request.get_data(as_text=True)
+    line_bot_api.push_message(body.events.source.user_id, TextSendMessage(quick_reply=QuickReply(items=[
+    QuickReplyButton(action=MessageAction(label="初始化酒友", text="初始化酒友"))
+])))
     print(body)
     app.logger.info("Request body: " + body)
     # handle webhook body
