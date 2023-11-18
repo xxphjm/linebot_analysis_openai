@@ -122,8 +122,8 @@ def send_chart(userId):
     plt.savefig(temp_file_path, format='png')
     plt.close()
     # 上傳至imgur
-    client_id = '6fa533a13b4a60e'
-    client_secret = 'f46e29f638635fa5d1a2c4032988dff17c29af90'
+    client_id = os.getenv('IMGUR_CLIENT_ID')
+    client_secret =  os.getenv('IMGUR_CLIENT_SECRET')
     client = ImgurClient(client_id, client_secret)
     image_info = client.upload_from_path(temp_file_path)
 
