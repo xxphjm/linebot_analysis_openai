@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, abort
 
 from linebot import (
@@ -8,24 +9,28 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 
-#======python的函數庫==========
-import tempfile, os
+# ======python的函數庫==========
+import tempfile
+import os
 import datetime
 import openai
 import time
-import threading 
+import threading
 import requests
-#======python的函數庫==========
+# ======python的函數庫==========
+
+
 def wake_up():
-    while 1==1:
+    while 1 == 1:
         url = 'https://linebot-analysis-openai.onrender.com/' + 'wake_up'
         res = requests.get(url)
-        if res.status_code==200:
+        if res.status_code == 200:
             print('喚醒render成功')
         else:
             print('喚醒失敗')
         print(res)
         time.sleep(28*60)
+
 
 threading.Thread(target=wake_up).start()
 app = Flask(__name__)
@@ -35,15 +40,16 @@ line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
 # Channel Secret
 handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 # OPENAI API Key初始化設定
-openai.api_key = os.getenv('OPENAI_API_KY')
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
 def GPT_response(text):
     # 接收回應
-    response = openai.Completion.create(model="text-davinci-003", prompt=text, temperature=0.5, max_tokens=500)
+    response = openai.Completion.create(
+        model="text-davinci-003", prompt=text, temperature=0.5, max_tokens=500)
     print(response)
     # 重組回應
-    answer = response['choices'][0]['text'].replace('。','')
+    answer = response['choices'][0]['text'].replace('。', '')
     return answer
 
 
@@ -62,20 +68,25 @@ def callback():
         abort(400)
     return 'OK'
 
+
 @app.route("/wake_up")
 def wake_up():
     return "Hey!Wake Up!!"
 # 處理訊息
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     msg = event.message.text
     try:
         GPT_answer = GPT_response(msg)
         print(GPT_answer)
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(GPT_answer))
+        line_bot_api.reply_message(
+            event.reply_token, TextSendMessage(GPT_answer))
     except:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage('你所使用的OPENAI API key額度可能已經超過，請於後台Log內確認錯誤訊息'))
-        
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(
+            '你所使用的OPENAI API key額度可能已經超過，請於後台Log內確認錯誤訊息'))
+
 
 @handler.add(PostbackEvent)
 def handle_message(event):
@@ -90,9 +101,8 @@ def welcome(event):
     name = profile.display_name
     message = TextSendMessage(text=f'{name}歡迎加入')
     line_bot_api.reply_message(event.reply_token, message)
-        
-        
-import os
+
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
