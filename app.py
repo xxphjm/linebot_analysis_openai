@@ -124,7 +124,11 @@ def send_chart(userId):
     # Equal aspect ratio ensures that pie is drawn as a circle.
     plt.axis('equal')
 
-    # Save the chart as a binary stream
+    #伍雯琪數據分析部分
+
+    #黃綉蓮數據分析部分
+
+    # 暫時儲存圖檔
     temp_file_path = tempfile.NamedTemporaryFile(
         delete=False, suffix=".png").name
     plt.savefig(temp_file_path, format='png')
