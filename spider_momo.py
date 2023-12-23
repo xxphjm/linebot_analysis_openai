@@ -15,11 +15,11 @@ from selenium.webdriver.support import expected_conditions as EC
 delay_choices = [8, 5, 10, 6, 4, 9, 12, 7]  #延遲的秒數
 delay = random.choice(delay_choices)  #隨機選取秒數
 keyword = '理膚寶水'
-pages = 7
+pages = 12
 user_agent = UserAgent()
 headers={ 'user-agent': user_agent.random }
 urls = []
-for page in range(6, pages):
+for page in range(1, pages+1):
     url = 'https://m.momoshop.com.tw/search.momo?_advFirst=N&_advCp=N&curPage={}&searchType=1&cateLevel=2&ent=k&searchKeyword={}&_advThreeHours=N&_isFuzzy=0&_imgSH=fourCardType'.format(page, keyword)
     resp = requests.get(url, headers=headers)
     if resp.status_code == 200:
@@ -122,5 +122,5 @@ finally:
     time.sleep(delay)
     driver.quit()
 df=pd.concat(df, ignore_index=True)
-df.to_csv('./MOMO_6.csv')
+df.to_csv('./MOMO.csv')
 driver.close()
