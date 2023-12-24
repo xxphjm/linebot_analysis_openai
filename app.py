@@ -9,6 +9,7 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 import matplotlib.pyplot as plt
+
 # ======python的函數庫==========
 import os
 import openai
@@ -16,9 +17,8 @@ import time
 import threading
 import requests
 from imgurpython import ImgurClient
-# ======python的函數庫==========
 from mongodb_function import *
-from AnalysisCharts import *
+from Analysis.AnalysisCharts import *
 
 my_mongo_client = MongoDBClient('LINEBOT', 'CHAT_RECORDS')
 
