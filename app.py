@@ -10,7 +10,6 @@ from linebot.exceptions import (
 from linebot.models import *
 import matplotlib.pyplot as plt
 # ======python的函數庫==========
-import tempfile
 import os
 import openai
 import time
@@ -19,6 +18,7 @@ import requests
 from imgurpython import ImgurClient
 # ======python的函數庫==========
 from mongodb_function import *
+from AnalysisCharts import *
 
 my_mongo_client = MongoDBClient('LINEBOT', 'CHAT_RECORDS')
 
@@ -37,10 +37,7 @@ def wake_up():
 threading.Thread(target=wake_up).start()
 app = Flask(__name__)
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
-# Channel Access Token
-line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
-# Channel Secret
-handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
+
 # OPENAI API Key初始化設定
 openai.api_key = os.getenv('OPENAI_API_KEY')
 # # 設定初始化事件處理
@@ -49,10 +46,11 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 #     QuickReplyButton(action=MessageAction(label="初始化酒友", text="初始化酒友"))
 #     ])))
 
-def GPT_response(text):
+def GPT_response(productName,keyWord):
+    defaultText = f'作為理膚寶水的社群媒體經理，創建一個社群媒體行銷活動，以宣傳美妝產品。設計一個具有創意和吸引力的線上活動，透過多樣化的社群媒體貼文和付費廣告，來推進行銷計畫。同時設定明確的目標和衡量指標，以確保行銷方案有達到預期的成果\n\n{productName}這項產品有五個關鍵字由多至少分別是{keyWord}\n請依照這上述所說制定行銷方案'
     # 接收回應
     response = openai.Completion.create(
-        model="text-davinci-003", prompt=text, temperature=0.5, max_tokens=5000)
+        model="text-davinci-003", prompt=defaultText, temperature=0.5, max_tokens=5000)
     # 重組回應
     answer = response['choices'][0]['text'].replace('。', '')
     return answer
@@ -77,9 +75,11 @@ def callback():
 @app.route("/wake_up")
 def wake_up():
     return "Hey!Wake Up!!"
+
+type=['洗面乳','化妝水']
+keyword={'洗面乳':['很好','很讚','品質好','很溫和','不干涉'],
+    '化妝水':['修復','卸妝','品質好','舒緩','不適']}
 # 處理訊息
-
-
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
 
@@ -88,9 +88,12 @@ def handle_message(event):
     # print(event.source.userId)
     if msg == '請告訴我行銷方案':
         try:
-            GPT_answer = GPT_response(msg)
-            line_bot_api.reply_message(
-                event.reply_token, TextSendMessage(GPT_answer))
+            for i in type:
+                if i in msg:
+                    GPT_answer = GPT_response(msg,keyword[i])
+                    line_bot_api.reply_message(
+                        event.reply_token, TextSendMessage(GPT_answer))
+                    break
         except:
             line_bot_api.reply_message(event.reply_token, TextSendMessage(
                 GPT_response(msg)))
@@ -107,43 +110,14 @@ def handle_message(event):
     elif '@圖片' in msg:
         send_chart(userId)
     else:
-        my_mongo_client.write_one_data({
-            'USER_ID': userId,
-            'MESSAGE': msg,
-            'TIME_STAMP': event.timestamp})
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(msg))
+        send_chart(userId,event, msg)
 
+def send_chart(userId,event, msg):
+    for i in type:
+        if i in msg:
+            KeywordChart(msg,i,userId)
+            break
 
-def send_chart(userId):
-    # Create some sample data for the chart
-    labels = ['Label A', 'Label B', 'Label C', 'Label D']
-    values = [30, 50, 20, 40]
-
-    # Create a pie chart using matplotlib
-    plt.pie(values, labels=labels, autopct='%1.1f%%', startangle=140)
-    # Equal aspect ratio ensures that pie is drawn as a circle.
-    plt.axis('equal')
-
-    #伍雯琪數據分析部分
-
-    #黃綉蓮數據分析部分
-
-    # 暫時儲存圖檔
-    temp_file_path = tempfile.NamedTemporaryFile(
-        delete=False, suffix=".png").name
-    plt.savefig(temp_file_path, format='png')
-    plt.close()
-    # 上傳至imgur
-    client_id = os.getenv('IMGUR_CLIENT_ID')
-    client_secret = os.getenv('IMGUR_CLIENT_SECRET')
-    client = ImgurClient(client_id, client_secret)
-    image_info = client.upload_from_path(temp_file_path)
-    # 將圖片傳送給使用者
-    image_message = ImageSendMessage(
-        original_content_url=image_info['link'],
-        preview_image_url=image_info['link']
-    )
-    line_bot_api.push_message(userId, image_message)
 
 
 @handler.add(PostbackEvent)
