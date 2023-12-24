@@ -86,10 +86,10 @@ def handle_message(event):
 
     msg = event.message.text
     userId = event.source.user_id
+    print(userId)
     lastType=MongoDBClient('LINEBOT', 'ANALYSIS_DESC').col_find('TYPE')
     if msg == '請告訴我行銷方案':
         try:
-
             GPT_answer = GPT_response(lastType,userId)
             line_bot_api.reply_message(
                 event.reply_token, TextSendMessage(GPT_answer))
