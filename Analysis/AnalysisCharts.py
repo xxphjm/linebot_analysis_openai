@@ -83,7 +83,7 @@ def MoodChart(msg,type,userId):
     # 添加标签和标题
     plt.xlabel('關鍵字', fontproperties=font)
     plt.ylabel('分數', fontproperties=font)
-    plt.title(f'{msg}與前五名銷量產品情緒分析圖', fontproperties=font,fontsize=20)
+    plt.title(f'{msg}與月銷量前五名產品情緒分析圖', fontproperties=font,fontsize=20)
     # 暫時儲存圖檔
     temp_file_path = tempfile.NamedTemporaryFile(
         delete=False, suffix=".png").name
@@ -91,7 +91,7 @@ def MoodChart(msg,type,userId):
     plt.close()
     ResponseChart(temp_file_path,userId)
     
-    keywordDesc=f"{msg}這項產品有五個關鍵字由多至少分別是{keyword[type]}"
+    keywordDesc=f"{msg}這項產品與月銷量前五的產品情緒排行的有{keyword[type]}情緒分數分別是{values}"
     data={
         'USER_ID':userId,
         'KEYWORD_DESC':keywordDesc,
