@@ -79,7 +79,7 @@ def MoodChart(msg,type,userId):
     values = np.sort(values)[::-1]
     # 创建长条图
     plt.bar(categories, values, color='forestgreen')
-    plt.xticks(fontproperties=font,rotation=50)
+    plt.xticks(fontproperties=font,rotation=30)
     # 添加标签和标题
     plt.xlabel('關鍵字', fontproperties=font)
     plt.ylabel('分數', fontproperties=font)
