@@ -6,7 +6,7 @@ class MongoDBClient():
         self.collection_name = collection_name
 
         # 要獲得mongodb網址，請至mongodb網站申請帳號進行資料庫建立，網址 https://www.mongodb.com/
-        self.client = pymongo.MongoClient("mongodb+srv://s43926027:s35867921@cluster0.swxlqtf.mongodb.net/?authMechanism=DEFAULT")
+        self.client = pymongo.MongoClient("mongodb+srv://s43926027:s35867921@cluster0.swxlqtf.mongodb.net/")
 
         # 第一個db的建立
         self.db = self.client[self.db_name]
@@ -74,6 +74,27 @@ def dicMemberCheck(key, dicObj):
         return True
     else:
         return False
+def read_chat_records(self):
+    query = {
+        'USER_ID': 'U57260e8f7ab0618010c97bb27b76f7a1',
+        'TYPE': '洗面乳',
+        'CHART': {'$in': ['MoodChart', 'KeywordChart']}
+    }
+    data_list = []
+    for data in self.col.find(query).sort('_id', pymongo.DESCENDING).limit(1):
+        print(data)
 
+    print(data_list)
+    return data_list
 if __name__ == '__main__':
     print(MongoDBClient('LINEBOT', 'CHAT_RECORDS').read_many_datas())
+
+
+
+    # # # 执行查询并按照 _id 字段降序排序，取第一条记录
+    # result = MongoDBClient('LINEBOT', 'ANALYSIS_DESC').read_chat_records()
+
+    # # 输出结果
+    # for record in result:
+    #     print(record)
+

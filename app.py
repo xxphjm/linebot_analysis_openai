@@ -46,7 +46,8 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 #     QuickReplyButton(action=MessageAction(label="初始化酒友", text="初始化酒友"))
 #     ])))
 
-def GPT_response(productName,keyWord):
+def GPT_response(type,userId):
+
     defaultText = f'作為理膚寶水的社群媒體經理，創建一個社群媒體行銷活動，以宣傳美妝產品。設計一個具有創意和吸引力的線上活動，透過多樣化的社群媒體貼文和付費廣告，來推進行銷計畫。同時設定明確的目標和衡量指標，以確保行銷方案有達到預期的成果\n\n\n請依照這上述所說制定行銷方案'
     # 接收回應
     response = openai.Completion.create(
@@ -77,20 +78,20 @@ def wake_up():
     return "Hey!Wake Up!!"
 
 type=['洗面乳','化妝水']
-keyword={'洗面乳':['很好','很讚','品質好','很溫和','不干涉'],
-    '化妝水':['修復','卸妝','品質好','舒緩','不適']}
+
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
 
     msg = event.message.text
     userId = event.source.user_id
-    # print(event.source.userId)
+    desc=MongoDBClient('LINEBOT', 'ANALYSIS_DESC').read_chat_records()
+    print(desc)
     if msg == '請告訴我行銷方案':
         try:
             for i in type:
                 if i in msg:
-                    GPT_answer = GPT_response(msg,keyword[i])
+                    GPT_answer = GPT_response(i,userId)
                     line_bot_api.reply_message(
                         event.reply_token, TextSendMessage(GPT_answer))
                     break
@@ -116,6 +117,7 @@ def send_chart(userId,event, msg):
     for i in type:
         if i in msg:
             KeywordChart(msg,i,userId)
+            MoodChart(msg,i,userId)
             break
 
 
