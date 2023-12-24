@@ -52,7 +52,7 @@ def GPT_response(type,userId):
     print(defaultText)
     # 接收回應
     response = openai.Completion.create(
-        model="text-davinci-003", prompt=defaultText, temperature=0.5, max_tokens=5000)
+        model="text-davinci-003", prompt=defaultText, temperature=0.5, max_tokens=7000)
     # 重組回應
     answer = response['choices'][0]['text'].replace('。', '')
     return answer
