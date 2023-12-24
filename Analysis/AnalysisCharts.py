@@ -79,11 +79,11 @@ def MoodChart(msg,type,userId):
     values = np.sort(values)[::-1]
     # 创建长条图
     plt.bar(categories, values, color='forestgreen')
-    plt.xticks(fontproperties=font)
+    plt.xticks(fontproperties=font,rotation=50)
     # 添加标签和标题
     plt.xlabel('關鍵字', fontproperties=font)
     plt.ylabel('分數', fontproperties=font)
-    plt.title(f'{msg}與前五名銷量產品情緒分析圖', fontproperties=font)
+    plt.title(f'{msg}與前五名銷量產品情緒分析圖', fontproperties=font,fontsize=20)
     # 暫時儲存圖檔
     temp_file_path = tempfile.NamedTemporaryFile(
         delete=False, suffix=".png").name
