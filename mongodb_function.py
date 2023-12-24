@@ -67,16 +67,16 @@ class MongoDBClient():
                 break
         print(data)
         return data
-    def read_analysis_descs(self):
+    def read_analysis_descs(self,type,userId):
         query = {
-            'USER_ID': 'U57260e8f7ab0618010c97bb27b76f7a1',
-            'TYPE': '洗面乳',
+            'USER_ID': userId,
+            'TYPE': type,
             'CHART': {'$in': ['MoodChart', 'KeywordChart']}
         }
         data_list = []
         for data in self.col.find(query).sort('_id', pymongo.DESCENDING).limit(2):
-            print(data)
-
+            keyword_desc = data.get('KEYWORD_DESC', None)
+            data_list.append(keyword_desc)
         print(data_list)
         return data_list
 
