@@ -49,7 +49,8 @@ def KeywordChart(msg,type,userId):
     data={
         'USER_ID':userId,
         'KEYWORD_DESC':keywordDesc,
-        'TYPE':type
+        'TYPE':type,
+        "CHART":'KeywordChart',
 
     }
     my_mongo_client.col.insert_one(data)
