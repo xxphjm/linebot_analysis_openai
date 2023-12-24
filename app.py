@@ -85,7 +85,7 @@ def handle_message(event):
 
     msg = event.message.text
     userId = event.source.user_id
-    desc=MongoDBClient('LINEBOT', 'ANALYSIS_DESC').read_chat_records()
+    desc=MongoDBClient('LINEBOT', 'ANALYSIS_DESC').read_analysis_descs()
     print(desc)
     if msg == '請告訴我行銷方案':
         try:

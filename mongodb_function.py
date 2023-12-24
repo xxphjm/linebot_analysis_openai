@@ -67,6 +67,18 @@ class MongoDBClient():
                 break
         print(data)
         return data
+    def read_analysis_descs(self):
+        query = {
+            'USER_ID': 'U57260e8f7ab0618010c97bb27b76f7a1',
+            'TYPE': '洗面乳',
+            'CHART': {'$in': ['MoodChart', 'KeywordChart']}
+        }
+        data_list = []
+        for data in self.col.find(query).sort('_id', pymongo.DESCENDING).limit(2):
+            print(data)
+
+        print(data_list)
+        return data_list
 
 # 判斷key是否在指定的dictionary當中，若有則return True
 def dicMemberCheck(key, dicObj):
@@ -74,18 +86,7 @@ def dicMemberCheck(key, dicObj):
         return True
     else:
         return False
-def read_chat_records(self):
-    query = {
-        'USER_ID': 'U57260e8f7ab0618010c97bb27b76f7a1',
-        'TYPE': '洗面乳',
-        'CHART': {'$in': ['MoodChart', 'KeywordChart']}
-    }
-    data_list = []
-    for data in self.col.find(query).sort('_id', pymongo.DESCENDING).limit(1):
-        print(data)
 
-    print(data_list)
-    return data_list
 if __name__ == '__main__':
     print(MongoDBClient('LINEBOT', 'CHAT_RECORDS').read_many_datas())
 
