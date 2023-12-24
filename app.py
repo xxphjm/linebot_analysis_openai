@@ -86,7 +86,7 @@ def handle_message(event):
 
     msg = event.message.text
     userId = event.source.user_id
-    lastType=MongoDBClient('LINEBOT', 'ANALYSIS_DESC').col_find({}).sort('_id', -1).limit(1)
+    lastType=MongoDBClient('LINEBOT', 'ANALYSIS_DESC').col_find().sort('_id', -1).limit(1)
     print(lastType['TYPE'])
     if msg == '請告訴我行銷方案':
         try:
