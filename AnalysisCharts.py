@@ -50,7 +50,7 @@ def KeywordChart(msg,type,userId):
     my_mongo_client.col.insert_one(data)
     
 
-def ResponseChart(msg,temp_file_path,userId):
+def ResponseChart(temp_file_path,userId):
 
     # 上傳至imgur
     client_id = os.getenv('IMGUR_CLIENT_ID')
