@@ -1,3 +1,7 @@
 [build]
-  command = "gunicorn app:app" # Build Command
-
+  command = "pip install -r requirements.txt 
+[dev]
+  command = "gunicorn app:app"
+  port=8000
+  targetPort = 80
+  autoLaunch = true
