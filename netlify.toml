@@ -1,3 +1,4 @@
 [build]
-  command = "pip install -r requirements.txt && netlify-lambda build ./app.py" # Build Command
-
+  command = "pip install -r requirements.txt" # Build Command
+[deploy]
+  command = "gunicorn app:app"
