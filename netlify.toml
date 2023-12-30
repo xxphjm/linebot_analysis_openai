@@ -2,6 +2,5 @@
   command = "pip install -r requirements.txt"
 [dev]
   command = "gunicorn app:app"
-  port=8000
-  targetPort = 80
+  port=5000
   autoLaunch = true
