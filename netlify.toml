@@ -1,6 +1,3 @@
 [build]
-  command = "pip install -r requirements.txt && python app.py build" # Build Command
+  command = "pip install -r requirements.txt && netlify-lambda build ./app.py" # Build Command
 
-
-[dev]
-  command = "npm run start"  # Start Command
