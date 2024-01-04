@@ -49,7 +49,7 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 def GPT_response(type,userId):
     desc='洗面乳品項月銷量前五名的產品分別為：\n【TRUU 童】76酵母胺基酸淨膚潔顏露\nNeutrogena 露得清】洗面露無香精\n【UNO】洗顏8入組\n【MUJI 無印良品】溫和洗面乳\n【WHOO 后】拱辰享洗面乳\n消費者的情感分數排名則為：露得清(0.64)>理膚寶水(0.63)>無印良品(0.56)>WHOO (0.53)>TRUU 童(0.46)>UNO(0.41)\n您的多容安泡沫洗面乳的情感分數是第二名，且為正向的情感分數(>0.5)。\n'
     # desc=MongoDBClient('LINEBOT', 'ANALYSIS_DESC').read_analysis_descs(type,userId)
-    defaultText = f'作為理膚寶水的社群媒體經理，創建一個社群媒體行銷活動，以宣傳美妝產品。設計一個具有創意和吸引力的線上活動，透過多樣化的社群媒體貼文和付費廣告，來推進行銷計畫。同時設定明確的目標和衡量指標，以確保行銷方案有達到預期的成果\n\n{desc}\n請依照這上述所說制定1000字的行銷方案'
+    defaultText = f'作為理膚寶水的社群媒體經理，創建一個社群媒體行銷活動，以宣傳美妝產品。設計一個具有創意和吸引力的線上活動，透過多樣化的社群媒體貼文和付費廣告，來推進行銷計畫。同時設定明確的目標和衡量指標，以確保行銷方案有達到預期的成果\n\n{desc}\n請依照這上述所說制定500字的行銷方案'
     # 接收回應
     response = openai.Completion.create(
         model="text-davinci-003", prompt=defaultText, temperature=0.5, max_tokens=3000)
