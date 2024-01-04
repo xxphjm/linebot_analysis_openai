@@ -95,7 +95,7 @@ def handle_message(event):
                 event.reply_token, TextSendMessage(GPT_answer))
         except:
             line_bot_api.reply_message(event.reply_token, TextSendMessage(
-                GPT_response(msg)))
+                GPT_response(msg,userId)))
     elif '@讀取' in msg:
         datas = my_mongo_client.read_many_datas()
         datas_len = len(datas)
