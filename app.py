@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 # ======python的函數庫==========
 import os
-from openai import OpenAI
+import openai
 import time
 import threading
 import requests
@@ -39,7 +39,7 @@ app = Flask(__name__)
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 
 # OPENAI API Key初始化設定
-
+openai.api_key = os.getenv('OPENAI_API_KEY')
 # # 設定初始化事件處理
 # def handle_follow(event):
 #     line_bot_api.push_message(event.source.user_id, TextSendMessage(quick_reply=QuickReply(items=[
@@ -51,24 +51,10 @@ def GPT_response(type,userId):
     # desc=MongoDBClient('LINEBOT', 'ANALYSIS_DESC').read_analysis_descs(type,userId)
     defaultText = f'作為理膚寶水的社群媒體經理，創建一個社群媒體行銷活動，以宣傳美妝產品。設計一個具有創意和吸引力的線上活動，透過多樣化的社群媒體貼文和付費廣告，來推進行銷計畫。同時設定明確的目標和衡量指標，以確保行銷方案有達到預期的成果\n\n{desc}\n請依照這上述所說制定500字的行銷方案'
     # 接收回應
-
-    client = OpenAI(
-        api_key=os.getenv('OPENAI_API_KEY')       
-    )
-
-    response = client.chat.completions.create(
-        model="gpt-4o", # 請修改 model 變數以呼叫不同模型
-        messages=[
-            {"role": "system", "content": defaultText},
-            {"role": "user", "content": desc},
-        ], temperature=0.5, max_tokens=3000
-)
+    response = openai.Completion.create(
+        model="text-davinci-003", prompt=defaultText, temperature=0.5, max_tokens=3000)
     # 重組回應
-    content = response.choices[0].message.content
-    if content:
-        answer = content.replace('。', '')
-    else:
-        answer = ''
+    answer = response['choices'][0]['text'].replace('。', '')
     return answer
 
 
@@ -89,7 +75,7 @@ def callback():
 
 
 @app.route("/wake_up")
-def wake_up_route():
+def wake_up():
     return "Hey!Wake Up!!"
 
 type=['洗面乳','化妝水']
@@ -121,7 +107,7 @@ def handle_message(event):
         message = TextSendMessage(text=str(datas))
         line_bot_api.reply_message(event.reply_token, message)
     elif '@圖片' in msg:
-        send_chart(userId, event, msg)
+        send_chart(userId)
     else:
         send_chart(userId,event, msg)
 
@@ -135,7 +121,7 @@ def send_chart(userId,event, msg):
 
 
 @handler.add(PostbackEvent)
-def handle_postback(event):
+def handle_message(event):
     print(event.postback.data)
 
 
