@@ -52,7 +52,7 @@ def GPT_response(type,userId):
     defaultText = f'作為理膚寶水的社群媒體經理，創建一個社群媒體行銷活動，以宣傳美妝產品。設計一個具有創意和吸引力的線上活動，透過多樣化的社群媒體貼文和付費廣告，來推進行銷計畫。同時設定明確的目標和衡量指標，以確保行銷方案有達到預期的成果\n\n{desc}\n請依照這上述所說制定500字的行銷方案'
     # 接收回應
     response = openai.Completion.create(
-        model="text-davinci-003", prompt=defaultText, temperature=0.5, max_tokens=3000)
+        model="gpt-4o", prompt=defaultText, temperature=0.5, max_tokens=3000)
     # 重組回應
     answer = response['choices'][0]['text'].replace('。', '')
     return answer
